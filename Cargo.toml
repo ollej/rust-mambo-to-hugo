@@ -7,5 +7,7 @@ edition = "2021"
 
 [dependencies]
 futures = "0.3.28"
+regex = "1.8.3"
 sqlx = { version = "0.6", features = [ "runtime-tokio-native-tls" , "mysql", "chrono" ] }
 tokio = { version = "1", features = ["full"] }
+unidecode = "0.3.0"
