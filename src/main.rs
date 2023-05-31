@@ -1,3 +1,4 @@
+use html2md::parse_html;
 use regex::Regex;
 use sqlx::mysql::MySqlPoolOptions;
 use sqlx::types::chrono::{NaiveDate, NaiveDateTime};
@@ -152,7 +153,11 @@ async fn main() -> Result<(), sqlx::Error> {
             title: story.title,
             author: story.author,
             date: story.time,
-            content: format!("{}\n{}", story.introtext, story.content),
+            content: format!(
+                "{}\n\n{}",
+                parse_html(&story.introtext),
+                parse_html(&story.content)
+            ),
             draft: !story.published,
         };
         content.write()?;
@@ -163,7 +168,7 @@ async fn main() -> Result<(), sqlx::Error> {
             title: article.title,
             author: article.author,
             date: article.date.and_hms_opt(0, 0, 0).unwrap(),
-            content: article.content,
+            content: parse_html(&article.content),
             draft: !article.published,
         };
         content.write()?;
