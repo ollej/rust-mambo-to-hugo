@@ -65,6 +65,7 @@ struct HugoContent {
     author: String,
     date: NaiveDateTime,
     content: String,
+    draft: bool,
 }
 
 impl HugoContent {
@@ -88,13 +89,15 @@ impl HugoContent {
 Title = "{}"
 Date = "{}"
 Author = "{}"
+Draft = {}
 +++
 
 {}"#,
             self.title,
             self.date,
             self.author,
-            self.content.replace("\r", "")
+            self.draft,
+            self.content.replace("\r", ""),
         )
     }
 }
@@ -150,6 +153,7 @@ async fn main() -> Result<(), sqlx::Error> {
             author: story.author,
             date: story.time,
             content: format!("{}\n{}", story.introtext, story.content),
+            draft: !story.published,
         };
         content.write()?;
     }
@@ -160,6 +164,7 @@ async fn main() -> Result<(), sqlx::Error> {
             author: article.author,
             date: article.date.and_hms_opt(0, 0, 0).unwrap(),
             content: article.content,
+            draft: !article.published,
         };
         content.write()?;
     }
