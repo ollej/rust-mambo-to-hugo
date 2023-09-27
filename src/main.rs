@@ -6,6 +6,7 @@ use std::io::prelude::*;
 use std::{fs, io};
 use unidecode::unidecode;
 
+static DATABASE_URL: &str = "mysql://root:password@127.0.0.1:3306/mambodb";
 static DIR: &str = "./content";
 
 #[derive(Debug, sqlx::FromRow)]
@@ -120,7 +121,7 @@ fn category_name(categories: &Vec<Category>, id: i32) -> Option<String> {
 async fn main() -> Result<(), sqlx::Error> {
     let pool = MySqlPoolOptions::new()
         .max_connections(5)
-        .connect("mysql://root:password@127.0.0.1:3306/theyard")
+        .connect(DATABASE_URL)
         .await?;
 
     // Read mambo data
